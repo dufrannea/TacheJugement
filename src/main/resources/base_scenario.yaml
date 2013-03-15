@@ -1,0 +1,25 @@
+items:
+- phrase	:  salut les enfants
+  sons      :
+    - sounds/312.wav
+    - sounds/312.wav
+    - sounds/312.wav
+  reponses : 
+    - 1
+    - 2
+- phrase	:  salut les enfants
+  sons      :
+    - sounds/312.wav
+    - sounds/312.wav
+    - sounds/312.wav
+  reponses : 
+    - 1
+    - 2
+- phrase	:  salut les enfants
+  sons      :
+    - sounds/312.wav
+    - sounds/312.wav
+    - sounds/312.wav
+  reponses : 
+    - 1
+    - 2
