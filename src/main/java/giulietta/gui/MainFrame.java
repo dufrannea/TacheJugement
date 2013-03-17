@@ -1,6 +1,7 @@
 package giulietta.gui;
 
 import giulietta.config.Config;
+import giulietta.model.LiveSession;
 import giulietta.model.Scenario;
 import giulietta.service.Context;
 import giulietta.service.Player;
@@ -13,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -36,6 +39,9 @@ public class MainFrame extends JFrame {
 	JLabel label;
 	private Scenario scenario;
 	private int index;
+	private LiveSession session;
+	private List<JCheckBox> checkBoxes;
+	
 	
 	/**
 	 * 
@@ -43,10 +49,13 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1024343263200792115L;
 	private JPanel buttons;
 	private JLabel topLabel;
+	private Player player;
 
 	public MainFrame(){
 		super();
 		index=0;
+		
+		this.session=new LiveSession("Paperina");
 		
 		setLookNFeel();
 		preload();
@@ -56,6 +65,14 @@ public class MainFrame extends JFrame {
 		setContentPane(jpane);
 		this.pack();
 		this.repaint();
+	}
+	
+	private void answer(){
+		ArrayList<Boolean> answers = new ArrayList<Boolean>();
+		for (JCheckBox c : checkBoxes){
+			answers.add(c.isSelected());
+		}
+		session.addAnswer(index, answers.toArray(new Boolean[0]));
 	}
 
 	private void setLookNFeel() {
@@ -69,7 +86,7 @@ public class MainFrame extends JFrame {
 	}
 
 	public void preload(){
-		Player player=new PlayerImpl();
+		player = new PlayerImpl();
 		scenario = player.loadStory();
 	}
 
@@ -145,6 +162,7 @@ public class MainFrame extends JFrame {
 
 	}
 	private void next() {
+		answer();
 		if (index < scenario.getItems().size() -1) {
 			++index;
 		} else {
@@ -153,6 +171,8 @@ public class MainFrame extends JFrame {
 		update();
 	}
 	private void previous() {
+		answer();
+
 		if (index > 0) {
 			--index;
 		} else {
@@ -167,6 +187,18 @@ public class MainFrame extends JFrame {
 	private void update() {
 		rebuildButtons();
 		rebuildLabel();
+		reloadAnswer();
+	}
+	
+
+	private void reloadAnswer() {
+		if (session.getAnswers().size()<index+1){
+			return;
+		}
+		for (Integer ans : session.getAnswers().get(index).getAnswers()){
+			checkBoxes.get(ans-1).setSelected(true);
+		}
+		
 	}
 
 	private void rebuildButtons() {
@@ -180,6 +212,7 @@ public class MainFrame extends JFrame {
 	}
 
 	private void buildButtons(JPanel buttons) {
+		checkBoxes=new ArrayList<JCheckBox>();
 		JPanel panel;
 		BoxLayout layout;
 		JCheckBox checkBox;
@@ -200,6 +233,7 @@ public class MainFrame extends JFrame {
 
 
 			checkBox= new JCheckBox();
+			checkBoxes.add(checkBox);
 			cbpanel=new JPanel();
 			
 			cbpanel.setLayout(new FlowLayout());

@@ -13,7 +13,6 @@ public class Context {
 	private static Properties m_properties = loadProperties();
 	
 	
-	
 	private static Properties loadProperties(){
 		File propFile = new File(Config.GIULIETTA_PROPERTIES_PATH.getValue());
 		FileReader reader;
@@ -36,6 +35,10 @@ public class Context {
 	
 	public static String getString(String property){
 		return (String)m_properties.getProperty(property); 
+	}
+	
+	public static boolean getBool(Config config) {
+		return Boolean.valueOf((String)m_properties.getProperty(config.getValue()));
 	}
 	
 	public static FileReader getFileReader(String property){

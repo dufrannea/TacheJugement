@@ -1,57 +1,53 @@
 package giulietta.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LiveSession {
 
-	private Item current;
-	private Person person;
-	private List<Item> items;
+	private String person;
+	private List<Answer> answers;
 	
-	public LiveSession(List<Item> items) {
-		//TODO : assertion.precondition
-		assert items != null;
-		
+	public LiveSession(String person){
+		this.person=person;
+		this.answers=new ArrayList<Answer>();
 	}
 	
-	/**
-	 * @return the items
-	 */
-	public final List<Item> getItems() {
-		return items;
-	}
-
-	/**
-	 * @param items the items to set
-	 */
-	public final void setItems(List<Item> items) {
-		this.items = items;
-	}
-
-	/**
-	 * @return the current
-	 */
-	public final Item getCurrent() {
-		return current;
-	}
-	/**
-	 * @param current the current to set
-	 */
-	public final void setCurrent(Item current) {
-		this.current = current;
+	public Answer addAnswer(Integer index,Boolean... answers){
+		Answer ans = new Answer(index, answers);
+		if (this.answers.size()>=index+1){ 
+			this.answers.set(index, ans);
+		}else{
+			this.answers.add(ans);
+		}
+		return ans;
 	}
 	/**
 	 * @return the person
 	 */
-	public final Person getPerson() {
+	public final String getPerson() {
 		return person;
 	}
 	/**
 	 * @param person the person to set
 	 */
-	public final void setPerson(Person person) {
+	public final void setPerson(String person) {
 		this.person = person;
 	}
+	/**
+	 * @return the answers
+	 */
+	public final List<Answer> getAnswers() {
+		return answers;
+	}
+	/**
+	 * @param answers the answers to set
+	 */
+	public final void setAnswers(List<Answer> answers) {
+		this.answers = answers;
+	}
+	
+	
 	
 
 }
