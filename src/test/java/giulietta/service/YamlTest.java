@@ -30,6 +30,13 @@ public class YamlTest {
 	}
 	
 	@Test
+	public void loadScenario(){
+		FileReader configFile= Context.getFileReader(Config.GIULIETTA_SESSION_KEY.getValue());
+		Yaml yaml=new Yaml(new Constructor(Scenario.class));
+		yaml.load(configFile);
+	}
+	
+	@Test
 	public void loadSessions(){
 		FileReader configFile= Context.getFileReader(Config.GIULIETTA_SESSION_KEY.getValue());
 		Yaml yaml=new Yaml(new Constructor(Scenario.class));

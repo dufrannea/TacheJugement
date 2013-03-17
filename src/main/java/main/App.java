@@ -15,7 +15,8 @@ public class App {
 			@Override
 			public void run() {
 				MainFrame window = new MainFrame(); 
-				window.setSize(300, 200);//On lui donne une taille pour qu'on puisse la voir
+				window.pack();
+				window.setMinimumSize(window.getSize());
 				window.setVisible(true);
 			}
 		});

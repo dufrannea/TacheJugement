@@ -1,10 +1,14 @@
 package giulietta.gui;
 
+import giulietta.config.Config;
 import giulietta.model.Scenario;
+import giulietta.service.Context;
 import giulietta.service.Player;
 import giulietta.service.PlayerImpl;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -31,96 +35,183 @@ public class MainFrame extends JFrame {
 	AudioStream currentStream;
 	JLabel label;
 	private Scenario scenario;
+	private int index;
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1024343263200792115L;
+	private JPanel buttons;
+	private JLabel topLabel;
 
 	public MainFrame(){
 		super();
+		index=0;
+		
 		setLookNFeel();
 		preload();
-		build();//On initialise notre fenêtre
+		this.setLayout(new BorderLayout());
+		JPanel jpane = new JPanel();
+		build(jpane);//On initialise notre fenêtre
+		setContentPane(jpane);
+		this.pack();
+		this.repaint();
 	}
 
 	private void setLookNFeel() {
 		try {
 			UIManager.setLookAndFeel(
-			            UIManager.getSystemLookAndFeelClassName());
+					UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void preload(){
 		Player player=new PlayerImpl();
 		scenario = player.loadStory();
 	}
 
-	private void build(){
-		setTitle("Tache 3"); //On donne un titre à l'application
-		setSize(320,240); //On donne une taille à notre fenêtre
-		setLocationRelativeTo(null); //On centre la fenêtre sur l'écran
-		//		setResizable(false); //On interdit la redimensionnement de la fenêtre
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //On dit à l'application de se fermer lors du clic sur la croix
+	private void build(JPanel truc){
+		setTitle(Context.getProperty(Config.GIULIETTA_TITLE)); 
+		setLocationRelativeTo(null); 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 
-		BoxLayout mainL = new BoxLayout(getContentPane(),BoxLayout.Y_AXIS);
-		this.setLayout(mainL);
-		this.add(Box.createVerticalGlue());
+		BoxLayout mainL = new BoxLayout(truc,BoxLayout.Y_AXIS);
+		truc.setLayout(mainL);
+		
+		
+		JPanel topPanel = new JPanel(new FlowLayout());
+		topLabel = new JLabel();
+		rebuildLabel();
+		topPanel.add(topLabel);
+		truc.add(topPanel);
 
+
+		JPanel sentencePanel = new JPanel();
+		sentencePanel.setLayout(new FlowLayout());
+	
 		label = new JLabel();
+		label.setText("la phrase");
+		sentencePanel.add(label);
+		sentencePanel.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createTitledBorder("Frase"),
+				BorderFactory.createEmptyBorder(5,5,5,5)));
+		truc.add(sentencePanel);
 
-		label.setText("sqlut");
-		this.add(label);
-		this.add(Box.createVerticalGlue());
+		JPanel cb = new JPanel(new BorderLayout());
 
-		
-		
-		JPanel buttons = new JPanel();
+		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
-		
-		
 		buttons.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder("sounds"),
-                        BorderFactory.createEmptyBorder(5,5,5,5)));
-		JPanel panel;
-		
-		BoxLayout layout;
-		
-		JCheckBox a ;
-		PlayButton play ;
-		for (String son: scenario.getItems().get(0).getSons()){
-			panel=new JPanel();
+				BorderFactory.createTitledBorder("Suoni"),
+				BorderFactory.createEmptyBorder(5,5,5,5)));
+		buildButtons(buttons);
+		cb.add(buttons);
+
+		truc.add(cb);
+
+
+
+		JPanel bottom = new JPanel(new FlowLayout());
+
+		JButton previous = new JButton(Context.getProperty(Config.GIULIETTA_PREVIOUS));
+		previous.addActionListener(new ActionListener() {
 			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				previous();
+				
+			}
+
+			
+		});
+		bottom.add(previous);
+
+		JButton next = new JButton(Context.getProperty(Config.GIULIETTA_NEXT));
+		next.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				next();
+				
+			}
+
+			
+		});
+		bottom.add(next);
+		truc.add(bottom);
+
+	}
+	private void next() {
+		if (index < scenario.getItems().size() -1) {
+			++index;
+		} else {
+			return ;
+		}
+		update();
+	}
+	private void previous() {
+		if (index > 0) {
+			--index;
+		} else {
+			return ;
+		}
+		update();
+	}
+	
+	private void rebuildLabel(){
+		topLabel.setText(Context.getProperty(Config.GIULIETTA_TOP_LABEL)+ " " + (index+1) + " / "+scenario.getItems().size());
+	}
+	private void update() {
+		rebuildButtons();
+		rebuildLabel();
+	}
+
+	private void rebuildButtons() {
+		for (Component c : buttons.getComponents()){
+			buttons.remove(c);
+		}
+		buildButtons(buttons);
+		
+		pack();
+		repaint();
+	}
+
+	private void buildButtons(JPanel buttons) {
+		JPanel panel;
+		BoxLayout layout;
+		JCheckBox checkBox;
+		PlayButton play;
+		JPanel cbpanel;
+		buttons.add(Box.createHorizontalGlue());
+
+		for (String son: scenario.getItems().get(index).getSons()){
+			System.out.println("button");
+			panel=new JPanel();
+
 			layout= new BoxLayout(panel, BoxLayout.Y_AXIS);
 			panel.setLayout(layout);
-			
-			buttons.add(Box.createRigidArea(new Dimension(10,0)));
+
 			play = getButton();
 			play.setSoundPath(son);
-			a= new JCheckBox();
-
 			panel.add(play);
-			panel.add(a,Box.CENTER_ALIGNMENT);
-			buttons.add(panel);	
+
+
+			checkBox= new JCheckBox();
+			cbpanel=new JPanel();
+			
+			cbpanel.setLayout(new FlowLayout());
+			cbpanel.add(checkBox);
+			panel.add(cbpanel);
+
+
+			buttons.add(panel);
+			buttons.add(Box.createHorizontalGlue());
+
+
 		}
-		buttons.add(Box.createVerticalGlue());
-
-		this.add(buttons);
-		this.add(Box.createVerticalGlue());
-		
-		JPanel bottom = new JPanel();
-		JButton previous = new JButton();
-		previous.setText("Previous");
-		bottom.add(previous);
-		bottom.add(Box.createHorizontalGlue());
-		JButton next = new JButton();
-		next.setText("next");
-		bottom.add(next);
-		this.add(bottom);
-		
-
 	}
 
 	private static PlayButton getButton(){

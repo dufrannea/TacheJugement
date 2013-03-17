@@ -30,6 +30,10 @@ public class Context {
 		}
 	}
 
+	public static String getProperty(Config config) {
+		return (String)m_properties.getProperty(config.getValue());
+	}
+	
 	public static String getString(String property){
 		return (String)m_properties.getProperty(property); 
 	}
