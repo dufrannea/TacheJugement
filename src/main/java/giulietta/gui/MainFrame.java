@@ -4,8 +4,10 @@ import giulietta.config.Config;
 import giulietta.model.LiveSession;
 import giulietta.model.Scenario;
 import giulietta.service.Context;
+import giulietta.service.MailSenderImpl;
 import giulietta.service.Player;
-import giulietta.service.PlayerImpl;
+import giulietta.service.SafeSaver;
+import giulietta.service.SafeSaverImpl;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -13,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +53,23 @@ public class MainFrame extends JFrame {
 	private JPanel buttons;
 	private JLabel topLabel;
 	private Player player;
+	private SafeSaver saver;
+	private JButton next;
 
-	public MainFrame(){
+	public MainFrame(LiveSession session,Player player){
 		super();
-		index=0;
-		
-		this.session=new LiveSession("Paperina");
-		
-		setLookNFeel();
+		this.player=player;
+		if (session ==null) {
+			index=0;
+			this.session=new LiveSession("Paperina");
+		} else{
+			recoverSession(session);
+		}
 		preload();
+		/*
+		 * Layout and content
+		 */
+		setLookNFeel();
 		this.setLayout(new BorderLayout());
 		JPanel jpane = new JPanel();
 		build(jpane);//On initialise notre fenêtre
@@ -67,12 +78,57 @@ public class MainFrame extends JFrame {
 		this.repaint();
 	}
 	
+	private void recoverSession(LiveSession toRecover) {
+		this.session = toRecover;
+		this.index = session.getAnswers().size() - 1;
+	}
+	
 	private void answer(){
 		ArrayList<Boolean> answers = new ArrayList<Boolean>();
+		int npositive=0;
 		for (JCheckBox c : checkBoxes){
 			answers.add(c.isSelected());
+			if (c.isSelected()){
+				npositive +=1;
+			}
 		}
+
+		boolean equal = false;
+
+		if (session.getAnswers().size() -1 >= index ) {
+
+			equal=true;
+			
+			for (int i : session.getAnswers().get(index).getAnswers()){
+				System.out.println(i);
+				System.out.println(answers.get(i-1));
+				if (!answers.get(i-1)) {
+					equal=false;
+					System.out.println("break");
+					break;
+				}
+			}
+			
+			if (session.getAnswers().get(index).getAnswers().size() != npositive){
+				equal=false;
+			}
+		}
+		if (equal) {
+			return;
+		}
+		
 		session.addAnswer(index, answers.toArray(new Boolean[0]));
+		
+		if (session.getAnswers().size() == scenario.getItems().size()){
+			session.setFinished(true);
+		}
+		
+		try {
+			saver.save(session);
+		} catch (IOException e) {
+			System.err.println("Could not save session");
+			e.printStackTrace();
+		}
 	}
 
 	private void setLookNFeel() {
@@ -86,8 +142,8 @@ public class MainFrame extends JFrame {
 	}
 
 	public void preload(){
-		player = new PlayerImpl();
 		scenario = player.loadStory();
+		saver = new SafeSaverImpl(new MailSenderImpl());
 	}
 
 	private void build(JPanel truc){
@@ -101,7 +157,6 @@ public class MainFrame extends JFrame {
 		
 		JPanel topPanel = new JPanel(new FlowLayout());
 		topLabel = new JLabel();
-		rebuildLabel();
 		topPanel.add(topLabel);
 		truc.add(topPanel);
 
@@ -110,10 +165,11 @@ public class MainFrame extends JFrame {
 		sentencePanel.setLayout(new FlowLayout());
 	
 		label = new JLabel();
-		label.setText("la phrase");
+		label.setText(scenario.getItems().get(index).getPhrase());
 		sentencePanel.add(label);
+		rebuildLabels();
 		sentencePanel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createTitledBorder("Frase"),
+				BorderFactory.createTitledBorder(Context.getProperty(Config.GIULIETTA_SENTENCE_GROUP)),
 				BorderFactory.createEmptyBorder(5,5,5,5)));
 		truc.add(sentencePanel);
 
@@ -122,7 +178,7 @@ public class MainFrame extends JFrame {
 		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
 		buttons.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createTitledBorder("Suoni"),
+				BorderFactory.createTitledBorder(Context.getProperty(Config.GIULIETTA_SOUNDS_GROUP)),
 				BorderFactory.createEmptyBorder(5,5,5,5)));
 		buildButtons(buttons);
 		cb.add(buttons);
@@ -146,7 +202,7 @@ public class MainFrame extends JFrame {
 		});
 		bottom.add(previous);
 
-		JButton next = new JButton(Context.getProperty(Config.GIULIETTA_NEXT));
+		next = new JButton(Context.getProperty(Config.GIULIETTA_NEXT));
 		next.addActionListener(new ActionListener() {
 			
 			@Override
@@ -181,15 +237,25 @@ public class MainFrame extends JFrame {
 		update();
 	}
 	
-	private void rebuildLabel(){
+	private void rebuildLabels(){
 		topLabel.setText(Context.getProperty(Config.GIULIETTA_TOP_LABEL)+ " " + (index+1) + " / "+scenario.getItems().size());
+		label.setText(scenario.getItems().get(index).getPhrase());
+
 	}
 	private void update() {
+		rebuildNextPrevious();
 		rebuildButtons();
-		rebuildLabel();
+		rebuildLabels();
 		reloadAnswer();
 	}
 	
+	private void rebuildNextPrevious(){
+		if (index == scenario.getItems().size() - 1 ){
+			next.setText(Context.getProperty(Config.GIULIETTA_SAVE));
+		} else {
+			next.setText(Context.getProperty(Config.GIULIETTA_NEXT));
+		}
+	}
 
 	private void reloadAnswer() {
 		if (session.getAnswers().size()<index+1){
@@ -221,7 +287,6 @@ public class MainFrame extends JFrame {
 		buttons.add(Box.createHorizontalGlue());
 
 		for (String son: scenario.getItems().get(index).getSons()){
-			System.out.println("button");
 			panel=new JPanel();
 
 			layout= new BoxLayout(panel, BoxLayout.Y_AXIS);
