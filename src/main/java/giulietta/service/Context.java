@@ -33,6 +33,13 @@ public class Context {
 		return (String)m_properties.getProperty(config.getValue());
 	}
 	
+	public static String getProperty(Config config,String def) {
+		if (m_properties.contains(config.getValue())) {
+			return getProperty(config);
+		}
+		return def;
+	}
+	
 	public static String getString(String property){
 		return (String)m_properties.getProperty(property); 
 	}

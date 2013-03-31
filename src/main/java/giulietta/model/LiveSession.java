@@ -38,6 +38,10 @@ public class LiveSession {
 	public final void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+	
+	public LiveSession(){
+		//defqult
+	}
 
 	public LiveSession(String person){
 		this.person=person;

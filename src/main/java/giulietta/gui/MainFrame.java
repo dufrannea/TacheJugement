@@ -4,10 +4,10 @@ import giulietta.config.Config;
 import giulietta.model.LiveSession;
 import giulietta.model.Scenario;
 import giulietta.service.Context;
-import giulietta.service.MailSenderImpl;
-import giulietta.service.Player;
-import giulietta.service.SafeSaver;
-import giulietta.service.SafeSaverImpl;
+import giulietta.service.api.Player;
+import giulietta.service.api.SafeSaver;
+import giulietta.service.impl.MailSenderImpl;
+import giulietta.service.impl.SafeSaverImpl;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -74,6 +74,7 @@ public class MainFrame extends JFrame {
 		JPanel jpane = new JPanel();
 		build(jpane);//On initialise notre fenêtre
 		setContentPane(jpane);
+		reloadAnswer();
 		this.pack();
 		this.repaint();
 	}

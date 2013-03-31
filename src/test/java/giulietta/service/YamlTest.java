@@ -3,12 +3,25 @@ package giulietta.service;
 import giulietta.config.Config;
 import giulietta.model.LiveSession;
 import giulietta.model.Scenario;
+import giulietta.service.api.Loader;
+import giulietta.service.api.Player;
+import giulietta.service.api.SafeSaver;
+import giulietta.service.impl.LoaderImpl;
+import giulietta.service.impl.PlayerImpl;
+import giulietta.service.impl.SafeSaverImpl;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -21,7 +34,8 @@ public class YamlTest {
 
 	@Test
 	public void loadStory() throws IOException {
-		Player player=new PlayerImpl();
+		Loader loader=new LoaderImpl();
+		Player player=new PlayerImpl(loader);
 		Scenario scenario = player.loadStory();
 		System.out.println(scenario.getItems().get(0).getPhrase());
 	}
@@ -103,5 +117,30 @@ public class YamlTest {
 
 		}
 	}
+	
+	@Test
+	public void testMessageBos(){
+			  JFrame frame = new JFrame("Input Dialog Box Frame");
+			  JButton button = new JButton("Show Input Dialog Box");
+			  button.addActionListener(new ActionListener(){
+			  public void actionPerformed(ActionEvent ae){
+			  String str = JOptionPane.showInputDialog(null, "Enter some text : ", 
+			"Roseindia.net", 1);
+			  if(str != null)
+			  JOptionPane.showMessageDialog(null, "You entered the text : " + str, 
+			"Roseindia.net", 1);
+			  else
+			  JOptionPane.showMessageDialog(null, "You pressed cancel button.", 
+			"Roseindia.net", 1);
+			  }
+			  });
+			  JPanel panel = new JPanel();
+			  panel.add(button);
+			  frame.add(panel);
+			  frame.setSize(400, 400);
+			  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			  frame.setVisible(true);
+			  }
+	
 
 }

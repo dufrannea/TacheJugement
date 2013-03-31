@@ -20,6 +20,10 @@ public class Answer {
 		}
 	}
 	
+	public Answer() {
+		super();
+	}
+
 	/**
 	 * @return the index
 	 */
