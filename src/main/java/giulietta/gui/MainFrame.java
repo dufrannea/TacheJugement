@@ -2,12 +2,13 @@ package giulietta.gui;
 
 import giulietta.config.Config;
 import giulietta.model.LiveSession;
+import giulietta.model.ManagedSound;
+import giulietta.model.ManagedSoundListener;
 import giulietta.model.Scenario;
 import giulietta.service.Context;
 import giulietta.service.api.Player;
 import giulietta.service.api.SafeSaver;
-import giulietta.service.impl.MailSenderImpl;
-import giulietta.service.impl.SafeSaverImpl;
+import giulietta.service.api.SoundPlayer;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -15,14 +16,12 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -31,41 +30,52 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import sun.audio.AudioStream;
 
 public class MainFrame extends JFrame {
 
-
-	AudioStream currentStream;
-	JLabel label;
-	private Scenario scenario;
-	private int index;
-	private LiveSession session;
-	private List<JCheckBox> checkBoxes;
-	
-	
-	/**
-	 * 
+	/*
+	 * Serial.
 	 */
 	private static final long serialVersionUID = 1024343263200792115L;
-	private JPanel buttons;
+	private int index;
+	/*
+	 * components.
+	 */
+	private JLabel label;
+	private Scenario scenario;
+	private LiveSession session;
+	private List<JCheckBox> checkBoxes;	
+	private List<JButton> playButtons;
+	private JPanel buttonsJPanel;
 	private JLabel topLabel;
-	private Player player;
-	private SafeSaver saver;
 	private JButton next;
+	/*
+	 * Services
+	 */
+	private final SafeSaver saver;
+	private final SoundPlayer soundPlayer;
 
-	public MainFrame(LiveSession session,Player player){
+	/**
+	 * Constructor. Inject deps.
+	 * @param session start from existing of create new.
+	 * @param player player service.
+	 */
+	public MainFrame(LiveSession session,Player player,SafeSaver saver,SoundPlayer soundPlayer){
 		super();
-		this.player=player;
+		this.saver=saver;
+		this.soundPlayer= soundPlayer;
 		if (session ==null) {
 			index=0;
 			this.session=new LiveSession("Paperina");
 		} else{
 			recoverSession(session);
 		}
-		preload();
+		
+		//load scenario.
+		scenario = player.loadStory();
+
 		/*
 		 * Layout and content
 		 */
@@ -79,59 +89,19 @@ public class MainFrame extends JFrame {
 		this.repaint();
 	}
 	
+	/**
+	 * Update state if already existing session.
+	 * @param toRecover session.
+	 */
 	private void recoverSession(LiveSession toRecover) {
 		this.session = toRecover;
 		this.index = session.getAnswers().size() - 1;
 	}
+
 	
-	private void answer(){
-		ArrayList<Boolean> answers = new ArrayList<Boolean>();
-		int npositive=0;
-		for (JCheckBox c : checkBoxes){
-			answers.add(c.isSelected());
-			if (c.isSelected()){
-				npositive +=1;
-			}
-		}
-
-		boolean equal = false;
-
-		if (session.getAnswers().size() -1 >= index ) {
-
-			equal=true;
-			
-			for (int i : session.getAnswers().get(index).getAnswers()){
-				System.out.println(i);
-				System.out.println(answers.get(i-1));
-				if (!answers.get(i-1)) {
-					equal=false;
-					System.out.println("break");
-					break;
-				}
-			}
-			
-			if (session.getAnswers().get(index).getAnswers().size() != npositive){
-				equal=false;
-			}
-		}
-		if (equal) {
-			return;
-		}
-		
-		session.addAnswer(index, answers.toArray(new Boolean[0]));
-		
-		if (session.getAnswers().size() == scenario.getItems().size()){
-			session.setFinished(true);
-		}
-		
-		try {
-			saver.save(session);
-		} catch (IOException e) {
-			System.err.println("Could not save session");
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Try to use system default lnf.
+	 */
 	private void setLookNFeel() {
 		try {
 			UIManager.setLookAndFeel(
@@ -142,11 +112,11 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	public void preload(){
-		scenario = player.loadStory();
-		saver = new SafeSaverImpl(new MailSenderImpl());
-	}
 
+	/**
+	 * First build the window.
+	 * @param truc the panel to build in.
+	 */
 	private void build(JPanel truc){
 		setTitle(Context.getProperty(Config.GIULIETTA_TITLE)); 
 		setLocationRelativeTo(null); 
@@ -154,8 +124,8 @@ public class MainFrame extends JFrame {
 
 		BoxLayout mainL = new BoxLayout(truc,BoxLayout.Y_AXIS);
 		truc.setLayout(mainL);
-		
-		
+
+
 		JPanel topPanel = new JPanel(new FlowLayout());
 		topLabel = new JLabel();
 		topPanel.add(topLabel);
@@ -164,7 +134,7 @@ public class MainFrame extends JFrame {
 
 		JPanel sentencePanel = new JPanel();
 		sentencePanel.setLayout(new FlowLayout());
-	
+
 		label = new JLabel();
 		label.setText(scenario.getItems().get(index).getPhrase());
 		sentencePanel.add(label);
@@ -176,13 +146,13 @@ public class MainFrame extends JFrame {
 
 		JPanel cb = new JPanel(new BorderLayout());
 
-		buttons = new JPanel();
-		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
-		buttons.setBorder(BorderFactory.createCompoundBorder(
+		buttonsJPanel = new JPanel();
+		buttonsJPanel.setLayout(new BoxLayout(buttonsJPanel, BoxLayout.X_AXIS));
+		buttonsJPanel.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createTitledBorder(Context.getProperty(Config.GIULIETTA_SOUNDS_GROUP)),
 				BorderFactory.createEmptyBorder(5,5,5,5)));
-		buildButtons(buttons);
-		cb.add(buttons);
+		buildButtons(buttonsJPanel);
+		cb.add(buttonsJPanel);
 
 		truc.add(cb);
 
@@ -192,32 +162,36 @@ public class MainFrame extends JFrame {
 
 		JButton previous = new JButton(Context.getProperty(Config.GIULIETTA_PREVIOUS));
 		previous.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				previous();
-				
+
 			}
 
-			
+
 		});
 		bottom.add(previous);
 
 		next = new JButton(Context.getProperty(Config.GIULIETTA_NEXT));
 		next.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				next();
-				
+
 			}
 
-			
+
 		});
 		bottom.add(next);
 		truc.add(bottom);
 
 	}
+	
+	/**
+	 * Callback for Next button action listener.
+	 */
 	private void next() {
 		answer();
 		if (index < scenario.getItems().size() -1) {
@@ -227,6 +201,10 @@ public class MainFrame extends JFrame {
 		}
 		update();
 	}
+	
+	/**
+	 * Callback for Previous button action listener.
+	 */
 	private void previous() {
 		answer();
 
@@ -237,12 +215,74 @@ public class MainFrame extends JFrame {
 		}
 		update();
 	}
-	
-	private void rebuildLabels(){
-		topLabel.setText(Context.getProperty(Config.GIULIETTA_TOP_LABEL)+ " " + (index+1) + " / "+scenario.getItems().size());
-		label.setText(scenario.getItems().get(index).getPhrase());
 
+	/**
+	 * Answer mechanism.
+	 * 
+	 */
+	private void answer(){
+		/*
+		 * Build answer.
+		 */
+		ArrayList<Boolean> answers = new ArrayList<Boolean>();
+		int npositive=0;
+		for (JCheckBox c : checkBoxes){
+			answers.add(c.isSelected());
+			if (c.isSelected()){
+				npositive +=1;
+			}
+		}
+
+		/*
+		 * Check if answer different from existing one (if existing).
+		 */
+		boolean equal = false;
+
+		if (session.getAnswers().size() -1 >= index ) {
+
+			equal=true;
+
+			for (int i : session.getAnswers().get(index).getAnswers()){
+				System.out.println(i);
+				System.out.println(answers.get(i-1));
+				if (!answers.get(i-1)) {
+					equal=false;
+					System.out.println("break");
+					break;
+				}
+			}
+
+			if (session.getAnswers().get(index).getAnswers().size() != npositive){
+				equal=false;
+			}
+		}
+		//answer existing and identical, return.
+		if (equal) {
+			return;
+		}
+
+		/*
+		 * Save answer.
+		 */
+		session.addAnswer(index, answers.toArray(new Boolean[0]));
+
+		//flag session as finished if necessary.
+		if (session.getAnswers().size() == scenario.getItems().size()){
+			session.setFinished(true);
+		}
+
+		try {
+			saver.save(session);
+		} catch (IOException e) {
+			System.err.println("Could not save session");
+			e.printStackTrace();
+		}
 	}
+
+	
+	/**
+	 * Rebuild the whole state.
+	 */
 	private void update() {
 		rebuildNextPrevious();
 		rebuildButtons();
@@ -250,6 +290,15 @@ public class MainFrame extends JFrame {
 		reloadAnswer();
 	}
 	
+	private void rebuildLabels(){
+		topLabel.setText(Context.getProperty(Config.GIULIETTA_TOP_LABEL)+ " " + (index+1) + " / "+scenario.getItems().size());
+		label.setText(scenario.getItems().get(index).getPhrase());
+		
+	}
+
+	/**
+	 * Update Next and Previous labels on buttons.
+	 */
 	private void rebuildNextPrevious(){
 		if (index == scenario.getItems().size() - 1 ){
 			next.setText(Context.getProperty(Config.GIULIETTA_SAVE));
@@ -258,6 +307,9 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Set values of checkBoxes with respect to the current answer.
+	 */
 	private void reloadAnswer() {
 		if (session.getAnswers().size()<index+1){
 			return;
@@ -265,21 +317,29 @@ public class MainFrame extends JFrame {
 		for (Integer ans : session.getAnswers().get(index).getAnswers()){
 			checkBoxes.get(ans-1).setSelected(true);
 		}
-		
+
 	}
 
+	/**
+	 * Destroy and instanciate buttons.
+	 */
 	private void rebuildButtons() {
-		for (Component c : buttons.getComponents()){
-			buttons.remove(c);
+		for (Component c : buttonsJPanel.getComponents()){
+			buttonsJPanel.remove(c);
 		}
-		buildButtons(buttons);
-		
+		buildButtons(buttonsJPanel);
+
 		pack();
 		repaint();
 	}
 
+	/**
+	 * Instanciate all needed buttons.
+	 * @param buttons the Panel the buttons will be created in.
+	 */
 	private void buildButtons(JPanel buttons) {
 		checkBoxes=new ArrayList<JCheckBox>();
+		playButtons = new ArrayList<JButton>();
 		JPanel panel;
 		BoxLayout layout;
 		JCheckBox checkBox;
@@ -294,6 +354,7 @@ public class MainFrame extends JFrame {
 			panel.setLayout(layout);
 
 			play = getButton();
+			playButtons.add(play);
 			play.setSoundPath(son);
 			panel.add(play);
 
@@ -301,7 +362,7 @@ public class MainFrame extends JFrame {
 			checkBox= new JCheckBox();
 			checkBoxes.add(checkBox);
 			cbpanel=new JPanel();
-			
+
 			cbpanel.setLayout(new FlowLayout());
 			cbpanel.add(checkBox);
 			panel.add(cbpanel);
@@ -313,8 +374,12 @@ public class MainFrame extends JFrame {
 
 		}
 	}
-
-	private static PlayButton getButton(){
+	
+	/**
+	 * Get a new PlayButton.
+	 * @return a new Button.
+	 */
+	private  PlayButton getButton(){
 		final PlayButton button = new PlayButton();
 		button.setText("sound1");
 		button.addActionListener(
@@ -322,13 +387,33 @@ public class MainFrame extends JFrame {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						SwingUtilities.invokeLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								setButtonsEnabled(false);
+								
+							}
+						});
 						button.click();
 					}
 				}
-				);
+		);
 		return button;
 	}
-	private static class PlayButton extends JButton{
+	
+	
+	private void setButtonsEnabled(boolean enabled){
+		for (JButton button : playButtons){
+			button.setEnabled(enabled);
+		}
+	}
+	/**
+	 * Button able to play sound.
+	 * @author arno
+	 *
+	 */
+	private class PlayButton extends JButton{
 
 		/**
 		 * 
@@ -337,26 +422,53 @@ public class MainFrame extends JFrame {
 
 		private String soundPath;
 
-		public PlayButton() {
+		/**
+		 * contructor, private.
+		 */
+		private PlayButton() {
 			super();
 
 		}
 
+		/**
+		 * Set the path to the sound.
+		 * @param soundPath the path.
+		 */
 		public void setSoundPath(String soundPath){
 			this.soundPath=soundPath;
 		}
-
+		
+		/**
+		 * Callback when click on button, plays sound.
+		 */
 		private void click(){
 			if (soundPath==null) return;
-			this.setEnabled(false);
-			URL url;
+			InputStream inputStream;
 			try {
-				url = new File(soundPath).toURI().toURL();
-				Clip clip = AudioSystem.getClip();
-				AudioInputStream ais = AudioSystem.
-						getAudioInputStream( url );
-				clip.open(ais);
-				clip.loop(0);
+				inputStream = new FileInputStream( new File(soundPath));
+				ManagedSound sound = soundPlayer.playSound(inputStream);
+				sound.setListener(new ManagedSoundListener() {
+					
+					@Override
+					public void onStart() {
+						
+					}
+					
+					@Override
+					public void onEnd() {
+						System.err.println("finished");
+						SwingUtilities.invokeLater(new Runnable() {
+							
+							@Override
+							public void run() {
+								setButtonsEnabled(true);						
+								
+							}
+						});
+					}
+				});
+				sound.play();
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
