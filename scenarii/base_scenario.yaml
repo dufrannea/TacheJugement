@@ -1,0 +1,30 @@
+items:
+- phrase	:  En novembre 2005, aucun souci
+  sons      :
+    - sounds/souci a.wav
+    - sounds/souci b.wav
+    - sounds/souci c.wav
+- phrase	:  Phrase numero deux
+  sons      :
+    - sounds/648.wav
+    - sounds/655.wav
+    - sounds/660.wav
+  reponses : 
+    - 1
+    - 2
+- phrase	:  Phrase numero trois
+  sons      :
+    - sounds/312.wav
+    - sounds/313.wav
+    - sounds/314.wav
+  reponses : 
+    - 1
+    - 2
+- phrase	:  Phrase numero quatre
+  sons      :
+    - sounds/648.wav
+    - sounds/655.wav
+    - sounds/660.wav
+  reponses : 
+    - 1
+    - 2

@@ -12,10 +12,18 @@ public enum Config {
 	GIULIETTA_SESSION_KEY("giulietta.scenario_file"),
 	GIULIETTA_TOP_LABEL("giulietta.top_label"),
 	GIULIETTA_SENTENCE_GROUP("giulietta.sentence.group"),
-	GIULIETTA_SOUNDS_GROUP("giulietta.sounds.group");
-	
+	GIULIETTA_SOUNDS_GROUP("giulietta.sounds.group"),
+	GIULIETTA_RIPRISTINA_1("giulietta.startup.ripristina1"),
+	GIULIETTA_RIPRISTINA_2("giulietta.startup.ripristina2"),
+	GIULIETTA_INPUT_NAME("giulietta.startup.inputname"), 
+	GIULIETTA_RIPRISTINA_TITLE("giulietta.startup.ripristina_title"),
+	GIULIETTA_INPUT_NAME_TITLE("giulietta.startup.inputname.title"),
+	GIULIETTA_PULSANTE_SUONO("giulietta.sounds.pulsante_suono"), 
+	ENABLE_PREVIOUS_ACTION("giulietta.enable.go.back");
+
+
 	private String value;
-	
+
 	Config(String value){
 		this.setValue(value);
 	}

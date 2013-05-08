@@ -66,12 +66,7 @@ public class MainFrame extends JFrame {
 		super();
 		this.saver=saver;
 		this.soundPlayer= soundPlayer;
-		if (session ==null) {
-			index=0;
-			this.session=new LiveSession("Paperina");
-		} else{
-			recoverSession(session);
-		}
+		recoverSession(session);
 		
 		//load scenario.
 		scenario = player.loadStory();
@@ -95,7 +90,11 @@ public class MainFrame extends JFrame {
 	 */
 	private void recoverSession(LiveSession toRecover) {
 		this.session = toRecover;
-		this.index = session.getAnswers().size() - 1;
+		if (session.getAnswers().size() == 0 ) {
+			this.index=0;
+		} else {
+			this.index = session.getAnswers().size() - 1;
+		}
 	}
 
 	
@@ -115,21 +114,21 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * First build the window.
-	 * @param truc the panel to build in.
+	 * @param container the panel to build in.
 	 */
-	private void build(JPanel truc){
-		setTitle(Context.getProperty(Config.GIULIETTA_TITLE)); 
+	private void build(JPanel container){
+		setTitle(Context.getProperty(Config.GIULIETTA_TITLE)+ " / "+ session.getPerson()); 
 		setLocationRelativeTo(null); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 
-		BoxLayout mainL = new BoxLayout(truc,BoxLayout.Y_AXIS);
-		truc.setLayout(mainL);
+		BoxLayout mainL = new BoxLayout(container,BoxLayout.Y_AXIS);
+		container.setLayout(mainL);
 
 
 		JPanel topPanel = new JPanel(new FlowLayout());
 		topLabel = new JLabel();
 		topPanel.add(topLabel);
-		truc.add(topPanel);
+		container.add(topPanel);
 
 
 		JPanel sentencePanel = new JPanel();
@@ -142,7 +141,7 @@ public class MainFrame extends JFrame {
 		sentencePanel.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createTitledBorder(Context.getProperty(Config.GIULIETTA_SENTENCE_GROUP)),
 				BorderFactory.createEmptyBorder(5,5,5,5)));
-		truc.add(sentencePanel);
+		container.add(sentencePanel);
 
 		JPanel cb = new JPanel(new BorderLayout());
 
@@ -154,24 +153,25 @@ public class MainFrame extends JFrame {
 		buildButtons(buttonsJPanel);
 		cb.add(buttonsJPanel);
 
-		truc.add(cb);
+		container.add(cb);
 
 
 
 		JPanel bottom = new JPanel(new FlowLayout());
-
-		JButton previous = new JButton(Context.getProperty(Config.GIULIETTA_PREVIOUS));
-		previous.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				previous();
-
-			}
-
-
-		});
-		bottom.add(previous);
+		if (Context.getBool(Config.ENABLE_PREVIOUS_ACTION)){
+			JButton previous = new JButton(Context.getProperty(Config.GIULIETTA_PREVIOUS));
+			previous.addActionListener(new ActionListener() {
+	
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					previous();
+	
+				}
+	
+	
+			});
+			bottom.add(previous);
+		}
 
 		next = new JButton(Context.getProperty(Config.GIULIETTA_NEXT));
 		next.addActionListener(new ActionListener() {
@@ -185,7 +185,7 @@ public class MainFrame extends JFrame {
 
 		});
 		bottom.add(next);
-		truc.add(bottom);
+		container.add(bottom);
 
 	}
 	
@@ -381,20 +381,13 @@ public class MainFrame extends JFrame {
 	 */
 	private  PlayButton getButton(){
 		final PlayButton button = new PlayButton();
-		button.setText("sound1");
+		button.setText(Context.getProperty(Config.GIULIETTA_PULSANTE_SUONO));
 		button.addActionListener(
 				new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						SwingUtilities.invokeLater(new Runnable() {
-							
-							@Override
-							public void run() {
-								setButtonsEnabled(false);
-								
-							}
-						});
+						setButtonsEnabled(false);
 						button.click();
 					}
 				}
@@ -403,10 +396,16 @@ public class MainFrame extends JFrame {
 	}
 	
 	
-	private void setButtonsEnabled(boolean enabled){
-		for (JButton button : playButtons){
-			button.setEnabled(enabled);
+	private void setButtonsEnabled(final boolean enabled){
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				for (JButton button : playButtons){
+					button.setEnabled(enabled);
+				}
+			}
 		}
+		);
 	}
 	/**
 	 * Button able to play sound.
@@ -451,20 +450,13 @@ public class MainFrame extends JFrame {
 					
 					@Override
 					public void onStart() {
-						
+						//Nothing to do.
 					}
 					
 					@Override
 					public void onEnd() {
 						System.err.println("finished");
-						SwingUtilities.invokeLater(new Runnable() {
-							
-							@Override
-							public void run() {
-								setButtonsEnabled(true);						
-								
-							}
-						});
+						setButtonsEnabled(true);						
 					}
 				});
 				sound.play();
