@@ -19,7 +19,8 @@ public enum Config {
 	GIULIETTA_RIPRISTINA_TITLE("giulietta.startup.ripristina_title"),
 	GIULIETTA_INPUT_NAME_TITLE("giulietta.startup.inputname.title"),
 	GIULIETTA_PULSANTE_SUONO("giulietta.sounds.pulsante_suono"), 
-	ENABLE_PREVIOUS_ACTION("giulietta.enable.go.back");
+	ENABLE_PREVIOUS_ACTION("giulietta.enable.go.back"),
+	GIULIETTA_EXPORT_DIR("giulietta.export.dir");
 
 
 	private String value;

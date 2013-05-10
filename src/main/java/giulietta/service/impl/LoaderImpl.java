@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -31,6 +33,21 @@ public class LoaderImpl implements Loader{
 	@Override
 	public LiveSession loadSession(File file){
 		return loadYamlFile(file, LiveSession.class);
+	}
+	
+	@Override
+	public List<LiveSession> loadAllSessions() {
+		File file = new File(Context.getProperty(Config.GIULIETTA_SESSIONS_DIR));
+		List<LiveSession> sessions = new ArrayList<LiveSession>();
+		if (file.exists() && file.canRead()){
+			for (String tempSession : file.list()){
+				LiveSession session = loadSession(new File(file.getAbsolutePath()+File.separator+tempSession));
+				if (session.isFinished()){
+					sessions.add(session);
+				}
+			}
+		}
+		return sessions;
 	}
 	
 	@Override

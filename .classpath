@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="C:/Users/arno/Desktop/SnakeYAML-all-1.11/snakeyaml/target/snakeyaml-1.11.jar" sourcepath="C:/Users/arno/Desktop/SnakeYAML-all-1.11/snakeyaml/target/snakeyaml-1.11-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/Users/arno/Downloads/javamail1_4_7/javamail-1.4.7/mail.jar"/>
+	<classpathentry kind="lib" path="C:/Users/arno/Downloads/poi-bin-3.9-20121203/poi-3.9/poi-3.9-20121203.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
