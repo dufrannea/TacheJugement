@@ -4,4 +4,6 @@ public interface Exporter {
 
 	void export();
 
+	void completeExport();
+
 }

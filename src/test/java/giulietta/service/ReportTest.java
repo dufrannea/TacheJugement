@@ -22,10 +22,18 @@ public class ReportTest {
 		Loader load = new LoaderImpl();
 		Statistics stats= new StatisticsImpl();
 		Exporter exporter = new ExporterImpl(load,stats);
-		
-		
 		exporter.export();
 		
+	}
+	
+	@Test
+	public void generateFullReport(){
+		Loader load = new LoaderImpl();
+		Statistics stats= new StatisticsImpl();
+		Exporter exporter = new ExporterImpl(load,stats);
+		
+		
+		exporter.completeExport();
 	}
 	
 	
