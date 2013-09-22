@@ -104,12 +104,22 @@ public class ExporterImpl implements Exporter {
 		}
 
 		List<LiveSession> sessions = loader.loadAllSessions();
+		
+		if (sessions.size()==0){
+			return;
+		}
 		String scenarioFile= Context.getProperty(Config.GIULIETTA_SCENARIO_FILE);
 		Scenario scenario = null;
 		try {
 			scenario = loader.loadScenario(new File(scenarioFile),false);
 		} catch (InvalidScenarioException e){
 			throw new RuntimeException(e);
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		//		// create a new workbook
 		Workbook workBook = new HSSFWorkbook();
