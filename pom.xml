@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.powto.apps</groupId>
 	<artifactId>TacheJugement</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -64,6 +64,49 @@
 					</execution>
 				</executions>
 			</plugin>
+				<plugin>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>1.5.1</version>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<jar>${artifactId}-${version}-jar-with-dependencies.jar</jar>
+							<outfile>${project.build.directory}/${artifactId}-${version}.exe</outfile>
+							<classPath>
+								<mainClass>main.App</mainClass>
+								
+								<preCp>${artifactId}-${version}-jar-with-dependencies.jar</preCp>
+							</classPath>
+							<jarPath>${project.build.directory}/${artifactId}-${version}-jar-with-dependencies.jar</jarPath>
+							<icon>src/main/resources/application.ico</icon>
+							<jre>
+								<minVersion>1.6.0</minVersion>
+								<jdkPreference>preferJre</jdkPreference>
+							</jre>
+							<dontWrapJar>true</dontWrapJar>
+							<versionInfo>
+								<fileVersion>1.1.0.0</fileVersion>
+								<txtFileVersion>${project.version}</txtFileVersion>
+								<fileDescription>${project.name}</fileDescription>
+								<copyright>2012 powto.org</copyright>
+								<productVersion>1.0.0.0</productVersion>
+								<txtProductVersion>1.0.0.0</txtProductVersion>
+								<productName>${project.name}</productName>
+								<companyName>POWTO</companyName>
+								<internalName>giulietta</internalName>
+								<originalFilename>giulietta.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
@@ -75,13 +118,14 @@
 						</goals>
 						<configuration>
 							<target>
-								<echo message="${project.artifactId}"/>
-								<ant target="mkzip"/>
+								<echo message="${project.artifactId}" />
+								<ant target="mkzip" />
 							</target>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+		
 		</plugins>
 	</build>
 </project>
