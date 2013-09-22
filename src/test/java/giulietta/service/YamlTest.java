@@ -36,20 +36,20 @@ public class YamlTest {
 	public void loadStory() throws IOException {
 		Loader loader=new LoaderImpl();
 		Player player=new PlayerImpl(loader);
-		Scenario scenario = player.loadStory();
+		Scenario scenario = player.loadStorySilently();
 		System.out.println(scenario.getItems().get(0).getPhrase());
 	}
 
 	@Test
 	public void testYAML() {
-		FileReader configFile= Context.getFileReader(Config.GIULIETTA_SESSION_KEY.getValue());
+		FileReader configFile= Context.getFileReader(Config.GIULIETTA_SCENARIO_FILE.getValue());
 		Yaml yaml=new Yaml(new Constructor(Scenario.class));
 		yaml.load(configFile);
 	}
 
 	@Test
 	public void loadScenario() {
-		FileReader configFile= Context.getFileReader(Config.GIULIETTA_SESSION_KEY.getValue());
+		FileReader configFile= Context.getFileReader(Config.GIULIETTA_SCENARIO_FILE.getValue());
 		Yaml yaml=new Yaml(new Constructor(Scenario.class));
 		yaml.load(configFile);
 	}
@@ -78,33 +78,33 @@ public class YamlTest {
 	@Test
 	public void saveTempSession() throws IOException {
 		SafeSaver saver = new SafeSaverImpl(null);
-		
+
 		LiveSession session = getLiveSession(USER_TEST);
-		
+
 		saver.save(session);
 	}
-	
+
 	@Test
 	public void saveFinishedSession() throws IOException {
 		SafeSaver saver = new SafeSaverImpl(null);
-		
+
 		LiveSession session = getLiveSession(USER_TEST);
 		session.addAnswer(3, false,false,false);
 		session.setFinished(true);
-		
+
 		saver.save(session);
 	}
-	
-	
-	
+
+
+
 	@Test
 	public void loadSessions() throws FileNotFoundException {
-		
+
 		String sessionsDirPath= Context.getProperty(Config.GIULIETTA_SESSIONS_DIR);
-		
+
 		File sessionsDir = new File(sessionsDirPath);
 		Yaml yaml = new Yaml();
-		
+
 		if (sessionsDir.exists() && sessionsDir.isDirectory()) {
 			for (String file : sessionsDir.list()){
 				File zeFile = new File(file);
@@ -117,30 +117,30 @@ public class YamlTest {
 
 		}
 	}
-	
+
 	@Test
 	public void testMessageBos(){
-			  JFrame frame = new JFrame("Input Dialog Box Frame");
-			  JButton button = new JButton("Show Input Dialog Box");
-			  button.addActionListener(new ActionListener(){
-			  public void actionPerformed(ActionEvent ae){
-			  String str = JOptionPane.showInputDialog(null, "Enter some text : ", 
-			"Roseindia.net", 1);
-			  if(str != null)
-			  JOptionPane.showMessageDialog(null, "You entered the text : " + str, 
-			"Roseindia.net", 1);
-			  else
-			  JOptionPane.showMessageDialog(null, "You pressed cancel button.", 
-			"Roseindia.net", 1);
-			  }
-			  });
-			  JPanel panel = new JPanel();
-			  panel.add(button);
-			  frame.add(panel);
-			  frame.setSize(400, 400);
-			  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			  frame.setVisible(true);
-			  }
-	
+		JFrame frame = new JFrame("Input Dialog Box Frame");
+		JButton button = new JButton("Show Input Dialog Box");
+		button.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				String str = JOptionPane.showInputDialog(null, "Enter some text : ", 
+						"Roseindia.net", 1);
+				if(str != null)
+					JOptionPane.showMessageDialog(null, "You entered the text : " + str, 
+							"Roseindia.net", 1);
+				else
+					JOptionPane.showMessageDialog(null, "You pressed cancel button.", 
+							"Roseindia.net", 1);
+			}
+		});
+		JPanel panel = new JPanel();
+		panel.add(button);
+		frame.add(panel);
+		frame.setSize(400, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+
 
 }

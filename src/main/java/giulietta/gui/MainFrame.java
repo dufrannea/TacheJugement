@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -77,7 +78,7 @@ public class MainFrame extends JFrame {
 		setLookNFeel();
 		this.setLayout(new BorderLayout());
 		JPanel jpane = new JPanel();
-		build(jpane);//On initialise notre fenêtre
+		build(jpane);//On initialise notre fenï¿½tre
 		setContentPane(jpane);
 		reloadAnswer();
 		this.pack();
@@ -199,6 +200,12 @@ public class MainFrame extends JFrame {
 		} else {
 			return ;
 		}
+		int nselect = session.getAnswers().get(index-1).getAnswers().size();
+		if (nselect ==0 || nselect == 3){
+			JOptionPane.showMessageDialog(null, Context.getProperty(Config.GIULIETTA_SELECT_CORRECT_NUMBER));
+			return;
+		}
+		
 		update();
 	}
 	
@@ -293,6 +300,7 @@ public class MainFrame extends JFrame {
 	private void rebuildLabels(){
 		topLabel.setText(Context.getProperty(Config.GIULIETTA_TOP_LABEL)+ " " + (index+1) + " / "+scenario.getItems().size());
 		label.setText(scenario.getItems().get(index).getPhrase());
+		
 		
 	}
 

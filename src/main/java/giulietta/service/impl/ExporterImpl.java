@@ -11,6 +11,7 @@ import giulietta.service.Context;
 import giulietta.service.api.Exporter;
 import giulietta.service.api.Loader;
 import giulietta.service.api.Statistics;
+import giulietta.service.impl.LoaderImpl.InvalidScenarioException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -103,13 +104,13 @@ public class ExporterImpl implements Exporter {
 		}
 
 		List<LiveSession> sessions = loader.loadAllSessions();
-		String scenarioFile= Context.getProperty(Config.GIULIETTA_SESSION_KEY);
-		Scenario scenario = loader.loadScenario(new File(scenarioFile));
-		//		for (Item t : scenario.getItems()){
-		//			System.out.println(t.getReponses());
-		//		}
-		/* Get access to HSSFCellStyle */
-
+		String scenarioFile= Context.getProperty(Config.GIULIETTA_SCENARIO_FILE);
+		Scenario scenario = null;
+		try {
+			scenario = loader.loadScenario(new File(scenarioFile),false);
+		} catch (InvalidScenarioException e){
+			throw new RuntimeException(e);
+		}
 		//		// create a new workbook
 		Workbook workBook = new HSSFWorkbook();
 		HSSFCellStyle red = (HSSFCellStyle) workBook.createCellStyle();

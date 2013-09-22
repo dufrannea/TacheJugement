@@ -23,7 +23,9 @@ public class ClassifierHelper {
 		int bad = nreponsesEleve - good;
 		
 		if (nreponsesAttendues==1){
-			assert missing == 0;
+//			if (missing != 0){
+//				throw new RuntimeException("missing is : " + missing );
+//			}
 			if (good ==1 && bad == 0){
 				return "good";
 			}
@@ -40,7 +42,9 @@ public class ClassifierHelper {
 				return "errorplus";
 			}
 		}
-		assert nreponsesAttendues==2;
+		if ( nreponsesAttendues!=2){
+			throw new RuntimeException("2222");
+		}
 		if (good ==2 && bad == 0){
 			return "good";
 		}

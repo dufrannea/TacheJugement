@@ -3,9 +3,12 @@ package giulietta.service;
 import giulietta.config.Config;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 public class Context {
@@ -15,9 +18,14 @@ public class Context {
 	
 	private static Properties loadProperties(){
 		File propFile = new File(Config.GIULIETTA_PROPERTIES_PATH.getValue());
-		FileReader reader;
+		
+		InputStreamReader reader = null;
+
 		try {
-			reader = new FileReader(propFile);
+			
+			InputStream stream = new FileInputStream(propFile);
+			reader = new InputStreamReader(stream,"ISO-8859-1");
+			
 			Properties properties=new Properties();
 			properties.load(reader);
 			return properties;

@@ -31,8 +31,6 @@ public class ReportTest {
 		Loader load = new LoaderImpl();
 		Statistics stats= new StatisticsImpl();
 		Exporter exporter = new ExporterImpl(load,stats);
-		
-		
 		exporter.completeExport();
 	}
 	

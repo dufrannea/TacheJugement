@@ -33,7 +33,9 @@ public class ManagedSound {
 			if (this.listener != null){
 				addListeners(clip);
 			}
+
 			clip.loop(0);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -47,11 +49,12 @@ public class ManagedSound {
 		this.listener = listener;
 	}
 
-	private void addListeners(Clip clip) {
+	private void addListeners(final Clip clip) {
 		clip.addLineListener(new LineListener() {
 			public void update(LineEvent event) {
 				if (event.getType() == LineEvent.Type.STOP) {
 					listener.onEnd();
+					clip.close();
 				}
 			}
 		});

@@ -9,7 +9,7 @@ public enum Config {
 	GIULIETTA_PREVIOUS("giulietta.previous"),
 	GIULIETTA_SAVE("giulietta.save"),
 	GIULIETTA_TITLE("giulietta.title"),
-	GIULIETTA_SESSION_KEY("giulietta.scenario_file"),
+	GIULIETTA_SCENARIO_FILE("giulietta.scenario_file"),
 	GIULIETTA_TOP_LABEL("giulietta.top_label"),
 	GIULIETTA_SENTENCE_GROUP("giulietta.sentence.group"),
 	GIULIETTA_SOUNDS_GROUP("giulietta.sounds.group"),
@@ -20,7 +20,9 @@ public enum Config {
 	GIULIETTA_INPUT_NAME_TITLE("giulietta.startup.inputname.title"),
 	GIULIETTA_PULSANTE_SUONO("giulietta.sounds.pulsante_suono"), 
 	ENABLE_PREVIOUS_ACTION("giulietta.enable.go.back"),
-	GIULIETTA_EXPORT_DIR("giulietta.export.dir");
+	GIULIETTA_EXPORT_DIR("giulietta.export.dir"),
+	GIULIETTA_SELECT_CORRECT_NUMBER("giulietta.select.correct.number"),
+	GIULIETTA_SCENARIO_ENCODING("giulietta.scenario.encoding");
 
 
 	private String value;

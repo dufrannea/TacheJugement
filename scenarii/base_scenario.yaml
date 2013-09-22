@@ -1,25 +1,11 @@
 items:
-- phrase	: Des émeutes, en novembre 2005.
+- phrase	: les résidences ne résistent pas longtemps.
   sons      :
-    - sounds/des emeutes a.wav
-    - sounds/des emeutes b.wav
-    - sounds/des emeutes c.wav
+    - sounds/longtemps a.wav
+    - sounds/longtemps b.wav
+    - sounds/longtemps c.wav
   reponses :
-    - 2
-- phrase	: Les deux cent acquéreurs qui habitent ici
-  sons      :
-    - sounds/cent acquereurs a.wav
-    - sounds/cent acquereurs b.wav
-    - sounds/cent acquereurs c.wav
-  reponses :
-    - 1
-- phrase	: Deux exposants du Salon immobilier de Paris
-  sons      :
-    - sounds/deux exposants a.wav
-    - sounds/deux exposants b.wav
-    - sounds/deux exposants c.wav
-  reponses :
-    - 2
+    - 3
 - phrase	: Les élus n'hésitent plus à parler de sécurité.
   sons      :
     - sounds/les elus a.wav
@@ -34,11 +20,11 @@ items:
     - sounds/dix ans c.wav
   reponses :
     - 2
-- phrase	: Elle ne vérifie jamais qui sonne à son interphone.
+- phrase	:  Au centre de la résidence trône la piscine.
   sons      :
-    - sounds/son interphone a.wav
-    - sounds/son interphone b.wav
-    - sounds/son interphone c.wav
+    - sounds/piscine a.wav
+    - sounds/piscine b.wav
+    - sounds/piscine c.wav
   reponses :
     - 1
 - phrase	: Ces arsenaux sécuritaires de la résidence ne résistent pas
@@ -48,51 +34,6 @@ items:
     - sounds/ces arsenaux c.wav
   reponses :
     - 2
-- phrase	: Ils abiment des voitures.
-  sons      :
-    - sounds/ils abiment a.wav
-    - sounds/ils abiment b.wav
-    - sounds/ils abiment c.wav
-  reponses :
-    - 2
-- phrase	:  Elle utilise de temps en temps son alarme.
-  sons      :
-    - sounds/de temps en temps a.wav
-    - sounds/de temps en temps b.wav
-    - sounds/de temps en temps c.wav
-  reponses :
-    - 3
-- phrase	: On se sent à l'écart des problèmes, dit-elle.
-  sons      :
-    - sounds/dit-elle a.wav
-    - sounds/dit-elle b.wav
-    - sounds/dit-elle c.wav
-  reponses :
-    - 1
-- phrase	: Ils arrivent du RER et sautent par-dessus le grand enclos.
-  sons      :
-    - sounds/grand enclos a.wav
-    - sounds/grand enclos b.wav
-    - sounds/grand enclos c.wav
-  reponses :
-    - 1
-    - 2
-- phrase	: Dans ce petit abri on se sent à l'écart des problèmes.
-  sons      :
-    - sounds/petit abri a.wav
-    - sounds/petit abri b.wav
-    - sounds/petit abri c.wav
-  reponses :
-    - 1
-    - 3
-- phrase	: Ces esclaves résidentielles sont surtout synonymes de cocons ultraprotégés.
-  sons      :
-    - sounds/cocons a.wav
-    - sounds/cocons b.wav
-    - sounds/cocons c.wav
-  reponses :
-    - 1
-    - 3
 - phrase	: Ils ont aussi dû convaincre les collectivités locales.
   sons      :
     - sounds/ils ont aussi a.wav
@@ -101,14 +42,6 @@ items:
   reponses :
     - 1
     - 3
-- phrase	: La vue est imprenable sur le hall d’entrée.
-  sons      :
-    - sounds/est imprenable a.wav
-    - sounds/est imprenable b.wav
-    - sounds/est imprenable c.wav
-  reponses :
-    - 1
-    - 2
 - phrase	: Les résidences sécurisées comme celle-là, fleurissent en France.
   sons      :
     - sounds/fleurissent en a.wav
@@ -117,14 +50,6 @@ items:
   reponses :
     - 1
     - 2
-- phrase	: Quand on a commencé à construire.
-  sons      :
-    - sounds/quand on a.wav
-    - sounds/quand on b.wav
-    - sounds/quand on c.wav
-  reponses :
-    - 2
-    - 3
 - phrase	: La porte s'ouvre.
   sons      :
     - sounds/s'ouvre a.wav
@@ -132,11 +57,11 @@ items:
     - sounds/s'ouvre c.wav
   reponses :
     - 2
-- phrase	:  Au centre de la résidence trône la piscine.
+- phrase	: Elle ne vérifie jamais qui sonne à son interphone.
   sons      :
-    - sounds/piscine a.wav
-    - sounds/piscine b.wav
-    - sounds/piscine c.wav
+    - sounds/son interphone a.wav
+    - sounds/son interphone b.wav
+    - sounds/son interphone c.wav
   reponses :
     - 1
 - phrase	: Il est le premier à avoir introduit le concept en France.
@@ -146,6 +71,13 @@ items:
     - sounds/concept c.wav
   reponses :
     - 2
+- phrase	: Les deux cent acquéreurs qui habitent ici
+  sons      :
+    - sounds/cent acquereurs a.wav
+    - sounds/cent acquereurs b.wav
+    - sounds/cent acquereurs c.wav
+  reponses :
+    - 1
 - phrase	: Les résidences sécurisées sont synonymes de réduction des coûts de gestion de l'espace public.
   sons      :
     - sounds/couts a.wav
@@ -153,6 +85,13 @@ items:
     - sounds/couts c.wav
   reponses :
     - 3
+- phrase	: On se sent à l'écart des problèmes, dit-elle.
+  sons      :
+    - sounds/dit-elle a.wav
+    - sounds/dit-elle b.wav
+    - sounds/dit-elle c.wav
+  reponses :
+    - 1
 - phrase	:  Les résidences ne résistent pas longtemps aux petits malins qui veulent à tout prix y entrer.
   sons      :
     - sounds/malin a.wav
@@ -175,11 +114,33 @@ items:
     - sounds/majeures c.wav
   reponses :
     - 1
+- phrase	: Dans ce petit abri on se sent à l'écart des problèmes.
+  sons      :
+    - sounds/petit abri a.wav
+    - sounds/petit abri b.wav
+    - sounds/petit abri c.wav
+  reponses :
+    - 1
+    - 3
+- phrase	: Deux exposants du Salon immobilier de Paris
+  sons      :
+    - sounds/deux exposants a.wav
+    - sounds/deux exposants b.wav
+    - sounds/deux exposants c.wav
+  reponses :
+    - 2
 - phrase	: Un couple de résidents allume son téléviseur.
   sons      :
     - sounds/couple a.wav
     - sounds/couple b.wav
     - sounds/couple c.wav
+  reponses :
+    - 3
+- phrase	: Ils abiment des voitures.
+  sons      :
+    - sounds/ils abiment a.wav
+    - sounds/ils abiment b.wav
+    - sounds/ils abiment c.wav
   reponses :
     - 2
 - phrase	:  Cela décourage les intrus.
@@ -189,6 +150,21 @@ items:
     - sounds/decourage c.wav
   reponses :
     - 1
+- phrase	:  Elle utilise de temps en temps son alarme.
+  sons      :
+    - sounds/de temps en temps a.wav
+    - sounds/de temps en temps b.wav
+    - sounds/de temps en temps c.wav
+  reponses :
+    - 3
+- phrase	: Quand on a commencé à construire.
+  sons      :
+    - sounds/quand on a.wav
+    - sounds/quand on b.wav
+    - sounds/quand on c.wav
+  reponses :
+    - 2
+    - 3
 - phrase	: Pierre Auberger, directeur marketing chez Bouygues Immobilier
   sons      :
     - sounds/directeur a.wav
@@ -196,6 +172,14 @@ items:
     - sounds/directeur c.wav
   reponses :
     - 2
+- phrase	: Ces esclaves résidentielles sont surtout synonymes de cocons ultraprotégés.
+  sons      :
+    - sounds/cocons a.wav
+    - sounds/cocons b.wav
+    - sounds/cocons c.wav
+  reponses :
+    - 1
+    - 3
 - phrase	: Nous avons retiré les appareils par crainte du voyeurisme.
   sons      :
     - sounds/voyeurisme a.wav
@@ -203,6 +187,14 @@ items:
     - sounds/voyeurisme c.wav
   reponses :
     - 1
+- phrase	: La vue est imprenable sur le hall d'entrée.
+  sons      :
+    - sounds/est imprenable a.wav
+    - sounds/est imprenable b.wav
+    - sounds/est imprenable c.wav
+  reponses :
+    - 1
+    - 2
 - phrase	: Elles subissent le sentiment d'insécurité, observe le psychiatre Serge Hefez.
   sons      :
     - sounds/insecurite a.wav
@@ -210,6 +202,14 @@ items:
     - sounds/insecurite c.wav
   reponses :
     - 3
+- phrase	: Ils arrivent du RER et sautent par-dessus le grand enclos.
+  sons      :
+    - sounds/grand enclos a.wav
+    - sounds/grand enclos b.wav
+    - sounds/grand enclos c.wav
+  reponses :
+    - 1
+    - 2
 - phrase	: En novembre 2005, nous n'avons eu aucun souci.
   sons      :
     - sounds/souci a.wav
@@ -217,10 +217,10 @@ items:
     - sounds/souci c.wav
   reponses :
     - 3
-- phrase	: les résidences ne résistent pas longtemps.
+- phrase	: Des émeutes, en novembre 2005.
   sons      :
-    - sounds/longtemps a.wav
-    - sounds/longtemps b.wav
-    - sounds/longtemps c.wav
+    - sounds/des emeutes a.wav
+    - sounds/des emeutes b.wav
+    - sounds/des emeutes c.wav
   reponses :
-    - 3
+    - 2
