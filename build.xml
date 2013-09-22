@@ -1,4 +1,4 @@
-<project name="MyProject" default="dist" basedir=".">
+<project name="MyProject"  basedir=".">
     <description>
        Build whole distrib 
     </description>
@@ -29,7 +29,11 @@
             <fileset dir="target/">
               <include name="*-jar-with-dependencies.jar"/>
             </fileset>
-                 <globmapper from="*.jar" to="${project.artifactId}.jar"/>
+        </copy>
+        <copy todir="${build}">
+            <fileset dir="target/">
+              <include name="*.exe"/>
+            </fileset>
         </copy>
   </target>
 
