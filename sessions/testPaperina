@@ -1,0 +1,11 @@
+!!giulietta.model.LiveSession
+answers:
+- answers: [1]
+  index: 0
+- answers: [1, 2]
+  index: 1
+- answers: [1, 2, 3]
+  index: 2
+finished: false
+person: testPaperina
+startDate: 2014-01-27T20:24:52.284Z

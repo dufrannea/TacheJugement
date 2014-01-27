@@ -19,55 +19,56 @@ import java.util.List;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-
-public class LoaderImpl implements Loader{
+public class LoaderImpl implements Loader {
 
 	@Override
-	public LiveSession loadUnfinishedSession(){
+	public LiveSession loadUnfinishedSession() {
 		File file = new File(Context.getProperty(Config.GIULIETTA_TEMP_DIR));
-		if (file.exists() && file.canRead()){
-			for (String tempSession : file.list()){
-				return loadSession(new File(file.getAbsolutePath()+File.separator+tempSession));
+		if (file.exists() && file.canRead()) {
+			for (String tempSession : file.list()) {
+				return loadSession(new File(file.getAbsolutePath() + File.separator + tempSession));
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
-	public LiveSession loadSession(File file){
+	public LiveSession loadSession(File file) {
 		return loadYamlFile(file, LiveSession.class);
 	}
-	
+
 	@Override
 	public List<LiveSession> loadAllSessions() {
 		File file = new File(Context.getProperty(Config.GIULIETTA_SESSIONS_DIR));
 		List<LiveSession> sessions = new ArrayList<LiveSession>();
-		if (file.exists() && file.canRead()){
-			for (String tempSession : file.list()){
-				LiveSession session = loadSession(new File(file.getAbsolutePath()+File.separator+tempSession));
-				if (session.isFinished()){
+		if (file.exists() && file.canRead()) {
+			for (String tempSession : file.list()) {
+				LiveSession session = loadSession(new File(file.getAbsolutePath() + File.separator + tempSession));
+				if (session.isFinished()) {
 					sessions.add(session);
 				}
 			}
 		}
 		return sessions;
 	}
-	
+
 	@Override
-	public Scenario loadScenario(File scenarioFile,boolean check) throws InvalidScenarioException{
-		Scenario scenario =  loadYamlFile(scenarioFile, Scenario.class);
-		if (!check){
+	public Scenario loadScenario(File scenarioFile, boolean check) throws InvalidScenarioException {
+		Scenario scenario = loadYamlFile(scenarioFile, Scenario.class);
+		if (!check) {
 			return scenario;
 		}
 		try {
 			checkScenario(scenario);
 			return scenario;
 		} catch (InvalidScenarioException e) {
-			throw new InvalidScenarioException("Cannot read "+scenarioFile.getName() + " because some sounds are missing.");
+			throw new InvalidScenarioException("Cannot read " + scenarioFile.getName() + " because some sounds are missing.");
 		}
-		
 	}
-	public class InvalidScenarioException extends Exception{
+
+	public class InvalidScenarioException extends Exception {
+
+		private static final long serialVersionUID = -4241515847625347198L;
 
 		public InvalidScenarioException(String message, Throwable cause) {
 			super(message, cause);
@@ -78,29 +79,28 @@ public class LoaderImpl implements Loader{
 			super(message);
 			// TODO Auto-generated constructor stub
 		}
-		
+
 	}
-	
-	
-	private boolean checkScenario(Scenario scenario) throws InvalidScenarioException{
+
+	private boolean checkScenario(Scenario scenario) throws InvalidScenarioException {
 		File checkFile;
 		for (Item item : scenario.getItems())
-			for (String sound : item.getSons()){
+			for (String sound : item.getSons()) {
 				checkFile = new File(sound);
-				if (!checkFile.exists() || !checkFile.isFile() || !checkFile.canRead()){
-					throw new InvalidScenarioException(" File "+ checkFile + " cannot be read ");
+				if (!checkFile.exists() || !checkFile.isFile() || !checkFile.canRead()) {
+					throw new InvalidScenarioException(" File " + checkFile + " cannot be read ");
 				}
 			}
 		return true;
 	}
-	
-	private  <D> D loadYamlFile(File file,Class<D> clazz){
+
+	private <D> D loadYamlFile(File file, Class<D> clazz) {
 		InputStreamReader reader = null;
 		try {
 			FileInputStream stream = new FileInputStream(file);
-			String encoding = Context.getProperty(Config.GIULIETTA_SCENARIO_ENCODING,"ISO-8859-1");
-			reader = new InputStreamReader(stream,encoding);
-			
+			String encoding = Context.getProperty(Config.GIULIETTA_SCENARIO_ENCODING, "ISO-8859-1");
+			reader = new InputStreamReader(stream, encoding);
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -108,17 +108,16 @@ public class LoaderImpl implements Loader{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Yaml yaml=new Yaml(new Constructor(clazz));
-		D load = (D) yaml.loadAs(reader, clazz);
-		D a= load;
+		Yaml yaml = new Yaml(new Constructor(clazz));
+		D load = yaml.loadAs(reader, clazz);
+		D a = load;
 		try {
 			reader.close();
-		} catch (IOException e){
-			
+		} catch (IOException e) {
+
 		}
 		return a;
-		
-		
+
 	}
-	
+
 }

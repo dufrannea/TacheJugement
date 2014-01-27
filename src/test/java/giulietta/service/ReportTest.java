@@ -12,27 +12,23 @@ import org.junit.Test;
 public class ReportTest {
 
 	@Test
-	public void testLoadSessions(){
+	public void testLoadSessions() {
 		Loader load = new LoaderImpl();
 		load.loadAllSessions();
 	}
-	
+
 	@Test
-	public void generateReport(){
+	public void generateReport() {
 		Loader load = new LoaderImpl();
-		Statistics stats= new StatisticsImpl();
-		Exporter exporter = new ExporterImpl(load,stats);
+		Statistics stats = new StatisticsImpl();
+		Exporter exporter = new ExporterImpl(load, stats);
 		exporter.export();
-		
 	}
-	
-	
-	public void generateFullReport(){
+
+	public void generateFullReport() {
 		Loader load = new LoaderImpl();
-		Statistics stats= new StatisticsImpl();
-		Exporter exporter = new ExporterImpl(load,stats);
+		Statistics stats = new StatisticsImpl();
+		Exporter exporter = new ExporterImpl(load, stats);
 		exporter.completeExport();
 	}
-	
-	
 }
