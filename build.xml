@@ -50,7 +50,7 @@
             <fileset dir="sounds"/>
         </copy>
         
-        <copy file="giulietta.properties" todir="${build}"/>
+        <copy file="tachejugement.properties" todir="${build}"/>
   </target>
 
   <target name="mkzip" depends="prepareconf">

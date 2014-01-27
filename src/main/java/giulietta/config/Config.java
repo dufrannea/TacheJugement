@@ -2,7 +2,7 @@ package giulietta.config;
 
 public enum Config {
 
-	GIULIETTA_PROPERTIES_PATH("giulietta.properties"),
+	GIULIETTA_PROPERTIES_PATH("tachejugement.properties"),
 	GIULIETTA_SESSIONS_DIR("giulietta.sessions_dir"),
 	GIULIETTA_TEMP_DIR("giulietta.temp_dir"),
 	GIULIETTA_NEXT("giulietta.next"),

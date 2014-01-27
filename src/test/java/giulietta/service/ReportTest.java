@@ -26,7 +26,7 @@ public class ReportTest {
 		
 	}
 	
-	@Test
+	
 	public void generateFullReport(){
 		Loader load = new LoaderImpl();
 		Statistics stats= new StatisticsImpl();

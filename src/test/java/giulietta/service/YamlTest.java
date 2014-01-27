@@ -4,9 +4,11 @@ import giulietta.config.Config;
 import giulietta.model.LiveSession;
 import giulietta.model.Scenario;
 import giulietta.service.api.Loader;
+import giulietta.service.api.MailSender;
 import giulietta.service.api.Player;
 import giulietta.service.api.SafeSaver;
 import giulietta.service.impl.LoaderImpl;
+import giulietta.service.impl.MailSenderImpl;
 import giulietta.service.impl.PlayerImpl;
 import giulietta.service.impl.SafeSaverImpl;
 
@@ -32,6 +34,12 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class YamlTest {
 	static String USER_TEST = "testPaperina";
 
+	
+	@Test
+	public void test(){
+		MailSender sender = new MailSenderImpl();
+		sender.sendMessage("dufrannea@gmail.com", new File("C:\\Users\\arno\\Desktop\\Chr16.txt"));
+	}
 	@Test
 	public void loadStory() throws IOException {
 		Loader loader=new LoaderImpl();

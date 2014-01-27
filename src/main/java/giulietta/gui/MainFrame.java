@@ -194,17 +194,23 @@ public class MainFrame extends JFrame {
 	 * Callback for Next button action listener.
 	 */
 	private void next() {
+		int npositive=0;
+		for (JCheckBox c : checkBoxes){
+			if (c.isSelected()){
+				npositive +=1;
+			}
+		}
+		if (npositive ==0 || npositive == 3){
+			JOptionPane.showMessageDialog(null, Context.getProperty(Config.GIULIETTA_SELECT_CORRECT_NUMBER));
+			return;
+		}
 		answer();
 		if (index < scenario.getItems().size() -1) {
 			++index;
 		} else {
 			return ;
 		}
-		int nselect = session.getAnswers().get(index-1).getAnswers().size();
-		if (nselect ==0 || nselect == 3){
-			JOptionPane.showMessageDialog(null, Context.getProperty(Config.GIULIETTA_SELECT_CORRECT_NUMBER));
-			return;
-		}
+		
 		
 		update();
 	}
@@ -254,7 +260,6 @@ public class MainFrame extends JFrame {
 				System.out.println(answers.get(i-1));
 				if (!answers.get(i-1)) {
 					equal=false;
-					System.out.println("break");
 					break;
 				}
 			}

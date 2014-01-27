@@ -153,6 +153,7 @@ public class ExporterImpl implements Exporter {
 			questionsSummary.add(hashMap);
 		}
 		for (LiveSession session : sessions){
+			System.out.println(session.getPerson());
 			int row_index = 1;
 			Iterator<Item> a = scenario.getItems().iterator();
 			sheet = createSheetForUser(workBook, session.getPerson());
