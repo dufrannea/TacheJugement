@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.powto.apps</groupId>
 	<artifactId>TacheJugement</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.2-SNAPSHOT</version>
 
 <!-- 		<dependency> -->
 <!-- 			<groupId>javax.mail</groupId> -->
@@ -82,14 +82,14 @@
 						</goals>
 						<configuration>
 							<headerType>gui</headerType>
-							<jar>${artifactId}-${version}-jar-with-dependencies.jar</jar>
-							<outfile>${project.build.directory}/${artifactId}-${version}.exe</outfile>
+							<jar>${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+							<outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
 							<classPath>
 								<mainClass>main.App</mainClass>
 								
-								<preCp>${artifactId}-${version}-jar-with-dependencies.jar</preCp>
+								<preCp>${project.artifactId}-${project.version}-jar-with-dependencies.jar</preCp>
 							</classPath>
-							<jarPath>${project.build.directory}/${artifactId}-${version}-jar-with-dependencies.jar</jarPath>
+							<jarPath>${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jarPath>
 							<icon>src/main/resources/application.ico</icon>
 							<jre>
 								<minVersion>1.6.0</minVersion>

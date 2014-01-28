@@ -5,6 +5,7 @@ import giulietta.model.Item;
 import giulietta.model.LiveSession;
 import giulietta.model.Scenario;
 import giulietta.service.Context;
+import giulietta.service.api.InvalidScenarioException;
 import giulietta.service.api.Loader;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.scanner.ScannerException;
 
 public class LoaderImpl implements Loader {
 
@@ -34,7 +36,7 @@ public class LoaderImpl implements Loader {
 
 	@Override
 	public LiveSession loadSession(File file) {
-		return loadYamlFile(file, LiveSession.class);
+		return loadYamlFileSilently(file, LiveSession.class);
 	}
 
 	@Override
@@ -62,39 +64,38 @@ public class LoaderImpl implements Loader {
 			checkScenario(scenario);
 			return scenario;
 		} catch (InvalidScenarioException e) {
-			throw new InvalidScenarioException("Cannot read " + scenarioFile.getName() + " because some sounds are missing.");
+			throw e;
 		}
-	}
-
-	public class InvalidScenarioException extends Exception {
-
-		private static final long serialVersionUID = -4241515847625347198L;
-
-		public InvalidScenarioException(String message, Throwable cause) {
-			super(message, cause);
-			// TODO Auto-generated constructor stub
-		}
-
-		public InvalidScenarioException(String message) {
-			super(message);
-			// TODO Auto-generated constructor stub
-		}
-
 	}
 
 	private boolean checkScenario(Scenario scenario) throws InvalidScenarioException {
 		File checkFile;
-		for (Item item : scenario.getItems())
+		boolean isOk = true;
+		List<String> missingFiles = new ArrayList<String>();
+		for (Item item : scenario.getItems()) {
 			for (String sound : item.getSons()) {
 				checkFile = new File(sound);
 				if (!checkFile.exists() || !checkFile.isFile() || !checkFile.canRead()) {
-					throw new InvalidScenarioException(" File " + checkFile + " cannot be read ");
+					isOk = false;
+					missingFiles.add(checkFile.getName());
 				}
 			}
+		}
+		if (!isOk) {
+			throw new InvalidScenarioException(" Some Files are cannot be read ", missingFiles);
+		}
 		return true;
 	}
 
-	private <D> D loadYamlFile(File file, Class<D> clazz) {
+	private <D> D loadYamlFileSilently(File file, Class<D> clazz) {
+		try {
+			return loadYamlFile(file, clazz);
+		} catch (InvalidScenarioException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private <D> D loadYamlFile(File file, Class<D> clazz) throws InvalidScenarioException {
 		InputStreamReader reader = null;
 		try {
 			FileInputStream stream = new FileInputStream(file);
@@ -102,14 +103,17 @@ public class LoaderImpl implements Loader {
 			reader = new InputStreamReader(stream, encoding);
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
+			throw new InvalidScenarioException("The file cannot be read", e);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new InvalidScenarioException("The encoding of the file is not correct", e);
 		}
 		Yaml yaml = new Yaml(new Constructor(clazz));
-		D load = yaml.loadAs(reader, clazz);
+		D load = null;
+		try {
+			load = yaml.loadAs(reader, clazz);
+		} catch (ScannerException e) {
+			throw new InvalidScenarioException("File syntax is not correct, " + e, e);
+		}
 		D a = load;
 		try {
 			reader.close();
@@ -119,5 +123,4 @@ public class LoaderImpl implements Loader {
 		return a;
 
 	}
-
 }
