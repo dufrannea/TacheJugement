@@ -46,9 +46,9 @@
         <mkdir dir="${build}/sessions"/>
         <mkdir dir="${build}/export"/>
         <mkdir dir="${build}/temp"/>
-        <copy todir="${build}/sounds">
+<!--        <copy todir="${build}/sounds">
             <fileset dir="sounds"/>
-        </copy>
+        </copy>-->
         
         <copy file="tachejugement.properties" todir="${build}"/>
   </target>
